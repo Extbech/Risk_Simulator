@@ -178,22 +178,42 @@ class Game:
             self.defender.loser()
 
 
+def write_results(stats):
+    with open("results.txt", "w") as f:
+        for stat in stats:
+            f.write(
+                f"Soliders each: {stat['soliders']} || Attacker Win %: {stat['attackerwin']} || Defender Win %: {stat['defenderwin']} || Games Played: {stat['games']}"
+            )
+            f.write("\n")
+
+
 if __name__ == "__main__":
 
-    attacker_wins = 0
-    defender_wins = 0
-    attacker_soliders = 1000
-    defender_soliders = 1000
-
-    for i in tqdm(range(1000)):
-        attacker = Attacker("Benji", attacker_soliders)
-        defender = Defender("Harald", defender_soliders)
-        risk = Game(attacker, defender)
-        risk.play()
-        if risk.winner.name == "Harald":
-            defender_wins += 1
-        else:
-            attacker_wins += 1
-    print(
-        f"""total games: {attacker_wins+defender_wins} Attacker soliders: {attacker_soliders} Defender soliders: {defender_soliders} \nAttacker wins: {(attacker_wins/(attacker_wins+defender_wins))*100}%\nDefender wins: {(defender_wins/(attacker_wins+defender_wins))*100}%"""
-    )
+    stats = []
+    for i in tqdm(range(100)):
+        i = i + 1
+        attacker_soliders = i
+        defender_soliders = i
+        defender_wins = 0
+        attacker_wins = 0
+        for k in range(1000):
+            attacker = Attacker("Benji", attacker_soliders)
+            defender = Defender("Harald", defender_soliders)
+            risk = Game(attacker, defender)
+            risk.play()
+            if risk.winner.name == "Harald":
+                defender_wins += 1
+            else:
+                attacker_wins += 1
+        total_games = attacker_wins + defender_wins
+        stats.append(
+            {
+                "soliders": i,
+                "attackerwin": round((attacker_wins / total_games) * 100, 2),
+                "defenderwin": round((defender_wins / total_games) * 100, 2),
+                "games": total_games,
+            }
+        )
+    for stat in stats:
+        print(stat["soliders"])
+    write_results(stats)

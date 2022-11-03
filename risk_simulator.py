@@ -1,6 +1,7 @@
 import random
 from tqdm import tqdm
-
+import matplotlib.pyplot as plt
+import pandas as pd
 
 class Attacker:
     def __init__(self, name, solider):
@@ -186,6 +187,17 @@ def write_results(stats):
             )
             f.write("\n")
 
+def make_plot(stats):
+    df = pd.DataFrame(stats)
+    print(df.head())
+    plt.plot(df["soliders"], df["attackerwin"], label="Attacker")
+    plt.plot(df["soliders"], df["defenderwin"], label="Defender")
+    plt.xlabel("Amount of Soliders")
+    plt.ylabel("Win %")
+    plt.title(f"Attacker vs Defender over {df['games'].values[0]} games")
+    plt.legend(loc="best")
+    plt.savefig("results")
+
 
 if __name__ == "__main__":
 
@@ -214,6 +226,5 @@ if __name__ == "__main__":
                 "games": total_games,
             }
         )
-    for stat in stats:
-        print(stat["soliders"])
     write_results(stats)
+    make_plot(stats)
